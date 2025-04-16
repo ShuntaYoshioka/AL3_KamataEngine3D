@@ -11,6 +11,9 @@ public:
 	// 描画
 	void Draw();
 
+	//デストラクタ
+	~GameScene();
+
 	//3Dモデル
 	KamataEngine::Model* model_ = nullptr;
 

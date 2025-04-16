@@ -14,8 +14,6 @@ void GameScene::Initialize() {
 
 	//カメラの初期化
 	camera_.Initialize();
-
-	delete model_;
 }
 
 void GameScene::Update() {
@@ -35,3 +33,5 @@ void GameScene::Draw() {
 	//3Dモデル描画処理後
 	Model::PostDraw();
 }
+
+GameScene::~GameScene() { delete model_; }
