@@ -1,4 +1,5 @@
 #pragma once
+#include "KamataEngine.h"
 class Player {
 public:
 	/// <summary>
@@ -15,4 +16,14 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+private:
+	// ワールド変換データ
+	KamataEngine::WorldTransform worldTransform_;
+
+	// モデル
+	KamataEngine::Model* model_ = nullptr;
+
+	// テクスチャハンドル
+	uint32_t textHandle_ = 0u;
 };

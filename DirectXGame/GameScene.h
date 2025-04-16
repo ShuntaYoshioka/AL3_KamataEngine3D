@@ -1,5 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
+#include "Player.h"
+
 class GameScene {
 public:
 	// 初期化
@@ -22,6 +24,9 @@ public:
 
 	// カメラ
 	KamataEngine::Camera camera_;
+
+	//自キャラ
+	Player* player_ = nullptr;
 
 private:
 	// テクスチャハンドル
