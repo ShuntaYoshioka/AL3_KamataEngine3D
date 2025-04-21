@@ -7,7 +7,6 @@ void Player::Initialize(KamataEngine::Model* model, uint32_t textureHandle, Kama
 	model_ = model;
 	textHandle_ = textureHandle;
 	worldTransform_.Initialize();
-
 	camera_ = camera;
 
 }
