@@ -5,7 +5,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize(KamataEngine::Model* model, uint32_t textureHandle, KamataEngine::Camera* camera);
 
 	/// <summary>
 	/// 更新
@@ -16,6 +16,8 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	KamataEngine::Camera* camera_ = nullptr;
 
 private:
 	// ワールド変換データ
