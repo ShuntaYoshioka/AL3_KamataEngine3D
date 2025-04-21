@@ -20,7 +20,6 @@ void GameScene::Initialize() {
 
 	// 自キャラの初期化
 	player_->Initialize(model_, textureHandle_,&camera_);
-}
 
 void GameScene::Update() {
 	// 自キャラの更新
@@ -28,6 +27,7 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
+
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 
 	Model::PreDraw(dxCommon->GetCommandList());
@@ -38,3 +38,5 @@ void GameScene::Draw() {
 }
 
 GameScene::~GameScene() { delete model_; }
+
+ 

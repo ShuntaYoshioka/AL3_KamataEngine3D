@@ -12,7 +12,7 @@ public:
 
 	// 描画
 	void Draw();
-
+  
 	// デストラクタ
 	~GameScene();
 
