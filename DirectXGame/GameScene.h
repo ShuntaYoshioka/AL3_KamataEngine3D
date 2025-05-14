@@ -1,6 +1,7 @@
 #pragma once
 #include "KamataEngine.h"
 #include "Player.h"
+#include "Skydome.h"
 #include <vector>
 
 class GameScene {
@@ -20,6 +21,9 @@ public:
 	// 3Dモデル
 	KamataEngine::Model* modelBlock_;
 
+	KamataEngine::Model* modelSkydome_ = nullptr;
+
+	KamataEngine::Model* modelPlayer_ = nullptr;
 	// ワールドトランスフォーム
 	KamataEngine::WorldTransform worldTransform_;
 
@@ -28,6 +32,9 @@ public:
 
 	//自キャラ
 	Player* player_ = nullptr;
+
+	//sky
+	Skydome* skydome_ = nullptr;
 
 	//デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
