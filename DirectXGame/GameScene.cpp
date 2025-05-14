@@ -8,10 +8,14 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("./Resources./uvChecker.png");
 
 	// 3Dモデルの生成
-	modelBlock_ = Model::CreateFromOBJ("cube");
+	modelBlock_ = Model::CreateFromOBJ("block");
+	modelSkydome_ = Model::CreateFromOBJ("SkyDome", true);
+	modelPlayer_ = Model::CreateFromOBJ("player", true);
 
 	// 自キャラ生成
 	player_ = new Player();
+
+	skydome_ = new Skydome();
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -20,7 +24,9 @@ void GameScene::Initialize() {
 	camera_.Initialize();
 
 	// 自キャラの初期化
-	player_->Initialize(modelBlock_, textureHandle_, &camera_);
+	player_->Initialize(modelPlayer_, &camera_);
+
+	skydome_->Initialize(modelSkydome_, &camera_);
 
 	// カメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -46,7 +52,7 @@ void GameScene::Initialize() {
 	// キューブの生成
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			if ((i + j) % 2 == 0) {
+			if ((i + j) % 2 > 0) {
 				worldTransformBlocks_[i][j] = new WorldTransform();
 				worldTransformBlocks_[i][j]->Initialize();
 				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
@@ -62,6 +68,8 @@ void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
 
+	// Skyblock
+	skydome_->Update();
 	// デバッグカメラの更新
 	debugCamera_->Update();
 
@@ -112,6 +120,9 @@ void GameScene::Draw() {
 	}
 
 	// 自キャラの描画
+
+	skydome_->Draw();
+
 	player_->Draw();
 
 	Model::PostDraw();
@@ -120,6 +131,8 @@ void GameScene::Draw() {
 GameScene::~GameScene() {
 	delete modelBlock_;
 	delete debugCamera_;
+	delete modelPlayer_;
+	delete modelSkydome_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
