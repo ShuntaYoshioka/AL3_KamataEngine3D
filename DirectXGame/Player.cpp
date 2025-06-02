@@ -34,14 +34,14 @@ void Player::Update() {
 					// 速度と逆方向に入力中は急ブレーキ
 					velocity_.x *= (1.0f - kAttenuation);
 				}
-
+				acceleration.x += kAcceleration;
 				if (lrDirection_ != LRDirection::kRight) {
 					lrDirection_ = LRDirection::kRight;
 
 					turnFirstRotationY_ = worldTransform_.rotation_.y;
 					turnTimer_ = kTimeTurn;
 				}
-				acceleration.x += kAcceleration;
+				
 			} else if (KamataEngine::Input::GetInstance()->PushKey(DIK_LEFT)) {
 				// 左入力
 				// 右入力中の左入力
@@ -49,13 +49,15 @@ void Player::Update() {
 					// 速度と逆方向に入力中は急ブレーキ
 					velocity_.x *= (1.0f - kAttenuation);
 				}
+
+				acceleration.x -= kAcceleration;
 				if (lrDirection_ != LRDirection::kLeft) {
 					lrDirection_ = LRDirection::kLeft;
 
 					turnFirstRotationY_ = worldTransform_.rotation_.y;
 					turnTimer_ = kTimeTurn;
 				}
-				acceleration.x -= kAcceleration;
+				
 			}
 			if (turnTimer_ > 0.0f) {
 				turnTimer_ += 1.0f / 60.0f;
