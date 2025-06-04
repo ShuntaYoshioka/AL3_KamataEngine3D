@@ -14,13 +14,11 @@ void Player::Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera
 	model_ = model;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
-	// worldTransform_rotation_.y = std::number::pi_v<float> / 2.0f;
+	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f;
 	camera_ = camera;
 }
 
 void Player::Update() {
-
-	bool landing = false;
 
 	// 移動入力
 	if (onGround_) {
@@ -41,7 +39,7 @@ void Player::Update() {
 					turnFirstRotationY_ = worldTransform_.rotation_.y;
 					turnTimer_ = kTimeTurn;
 				}
-				
+
 			} else if (KamataEngine::Input::GetInstance()->PushKey(DIK_LEFT)) {
 				// 左入力
 				// 右入力中の左入力
@@ -57,16 +55,8 @@ void Player::Update() {
 					turnFirstRotationY_ = worldTransform_.rotation_.y;
 					turnTimer_ = kTimeTurn;
 				}
-				
 			}
-			if (turnTimer_ > 0.0f) {
-				turnTimer_ += 1.0f / 60.0f;
 
-				float destinationRotationYTable[] = {std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> * 3.0f / 2.0f};
-				float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
-
-				worldTransform_.rotation_.y = EaseInOut(destinationRotationY, turnFirstRotationY_, turnTimer_ / kTimeTurn);
-			}
 			// 加速/減速
 			velocity_ += acceleration;
 			// 最大速度再現
@@ -78,6 +68,8 @@ void Player::Update() {
 		if (KamataEngine::Input::GetInstance()->PushKey(DIK_UP)) {
 			velocity_ += KamataEngine::Vector3(0, kJumpAcceleration, 0);
 		}
+
+		//空中
 	} else {
 		// 落下速度
 		velocity_ += KamataEngine::Vector3(0, -kGravityAcceleration, 0);
@@ -85,16 +77,7 @@ void Player::Update() {
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
 
-
-
-
-		// 移動
-		worldTransform_.translation_ += velocity_;
-		// 行列の更新
-		worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-		// 行列を定義バッファに転送
-		worldTransform_.TransferMatrix();
-	
+	bool landing = false;
 
 	// 当たり判定
 	if (velocity_.y < 0) {
@@ -103,21 +86,41 @@ void Player::Update() {
 		}
 	}
 
-	//接地判定
+	// 接地判定
 	if (onGround_) {
-		//ジャンプ開始
+		// ジャンプ開始
 		if (velocity_.y > 0.0f) {
 			onGround_ = false;
 		}
 	} else {
-		//着地
+		// 着地
 		if (landing) {
 			worldTransform_.translation_.y = 1.0f;
-			velocity_.x += (1.0f - kAttenuation);
+			velocity_.x *= (1.0f - kAttenuation);
 			velocity_.y = 0.0f;
 			onGround_ = true;
 		}
 	}
+
+	// 移動
+	worldTransform_.translation_ += velocity_;
+
+	if (turnTimer_ > 0.0f) {
+		turnTimer_ -= 1.0f / 60.0f;
+
+		float destinationRotationYTable[] = {
+			std::numbers::pi_v<float> / 2.0f,
+			std::numbers::pi_v<float> * 3.0f / 2.0f
+		};
+		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
+
+		worldTransform_.rotation_.y = EaseInOut(destinationRotationY, turnFirstRotationY_, turnTimer_ / kTimeTurn);
+	}
+
+	// 行列の更新
+	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	// 行列を定義バッファに転送
+	worldTransform_.TransferMatrix();
 }
 
 void Player::Draw() { model_->Draw(worldTransform_, *camera_); }
