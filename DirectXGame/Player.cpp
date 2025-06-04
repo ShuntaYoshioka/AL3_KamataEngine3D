@@ -69,7 +69,7 @@ void Player::Update() {
 			velocity_ += KamataEngine::Vector3(0, kJumpAcceleration, 0);
 		}
 
-		//空中
+		// 空中
 	} else {
 		// 落下速度
 		velocity_ += KamataEngine::Vector3(0, -kGravityAcceleration, 0);
