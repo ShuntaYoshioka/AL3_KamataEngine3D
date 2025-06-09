@@ -4,6 +4,7 @@
 #include "Skydome.h"
 #include <vector>
 #include "MapChipField.h"
+#include "CameraController.h"
 
 class GameScene {
 public:
@@ -36,6 +37,9 @@ public:
 
 	//sky
 	Skydome* skydome_ = nullptr;
+	
+	//カメラコントローラ
+	CameraController* cameracontroller_ = nullptr;
 
 	//マップチップフィールド
 	MapChipField* mapChipField_;

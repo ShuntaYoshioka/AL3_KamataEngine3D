@@ -12,12 +12,14 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("SkyDome", true);
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 
-	// 自キャラ生成
+	// 自キャラ等生成
 	skydome_ = new Skydome();
 
 	mapChipField_ = new MapChipField;
 
 	player_ = new Player();
+
+	cameracontroller_ = new CameraController();
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
