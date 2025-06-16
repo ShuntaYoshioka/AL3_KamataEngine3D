@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "MyMath.h"
+#include "CameraController.h"
 
 using namespace KamataEngine;
 
@@ -19,25 +20,33 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 
-	cameracontroller_ = new CameraController();
-
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
-		// 座標をマップチップ番号で指定
+	// 座標をマップチップ番号で指定
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,18);
+	// 自キャラの初期化
+	player_->Initialize(modelPlayer_, &camera_, playerPosition);
 
 	// カメラの初期化
 	camera_.Initialize();
 
-	// 自キャラの初期化
+	cameraController_ = new CameraController();
+
+	cameraController_->Initialize();
+	cameraController_->SetTarget(player_);
+
+	CameraController::Rect cameraAera = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
+	cameraController_->SetMovableArea(cameraAera);
+
+	//他の初期化
 	skydome_->Initialize(modelSkydome_, &camera_);
 
 	mapChipField_->LoadMapchipCsv("Resources/blocks.csv");
 
-	player_->Initialize(modelPlayer_, &camera_, playerPosition);
-
 	GenerateBlocks();
+
+	cameraController_->Reset();
 
 	// カメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -77,6 +86,10 @@ void GameScene::Update() {
 
 	// Skyblock
 	skydome_->Update();
+
+	//カメラコントロール
+	cameraController_->Update(); 
+	
 	// デバッグカメラの更新
 	debugCamera_->Update();
 
@@ -107,8 +120,11 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の転送
 		camera_.TransferMatrix();
 	} else {
+		camera_.matView = cameraController_->GetViewProjection().matView;
+		camera_.matProjection = cameraController_->GetViewProjection().matProjection;
 		// ビュープロジェクション行列の更新と転送
-		camera_.UpdateMatrix();
+	camera_.TransferMatrix();
+		//camera_.UpdateMatrix();
 	}
 }
 

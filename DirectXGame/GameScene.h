@@ -39,7 +39,7 @@ public:
 	Skydome* skydome_ = nullptr;
 	
 	//カメラコントローラ
-	CameraController* cameracontroller_ = nullptr;
+	CameraController* cameraController_ = nullptr;
 
 	//マップチップフィールド
 	MapChipField* mapChipField_;
