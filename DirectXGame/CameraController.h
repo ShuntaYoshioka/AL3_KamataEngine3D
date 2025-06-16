@@ -37,7 +37,7 @@ public:
 
 	static inline const float kInterpolationRate = 0.05f;
 
-	static inline const float kVelocityBias = 10.0f;
+	static inline const float kVelocityBias = 15.0f;
 
 	const KamataEngine::Camera& GetViewProjection() const {return camera_;}
 
