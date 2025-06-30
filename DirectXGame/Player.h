@@ -1,6 +1,8 @@
 #pragma once
 #include "KamataEngine.h"
 
+class MapChipField;
+
 class Player {
 	enum class LRDirection {
 		kRight,
@@ -9,34 +11,55 @@ class Player {
 
 	LRDirection lrDirection_ = LRDirection::kRight;
 
+	enum Corner {
+		kRightBottom,
+		kLeftBottom,
+		kRightTop,
+		kLeftTop,
+
+		kNumCorner
+	};
+
 public:
+	struct CollisionMapInfo {
+		bool ceiling = false;
+		bool landing = false;
+		bool hitWall = false;
+		KamataEngine::Vector3 move;
+	};
+
 	/// 初期化
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
+	void InputMove();
+	void AnimateTurn();
 	/// 更新
 	void Update();
 	/// 描画
 	void Draw();
 
-	
 	float turnFirstRotationY_ = 0.0f;
 
 	float turnTimer_ = 0.0f;
 
 	bool onGround_ = true;
 
-	static inline const float kTimeTurn = 0.3f; 
+	static inline const float kTimeTurn = 0.3f;
 
 	static inline const float kAcceleration = 0.05f;
 
-	static inline const float kAttenuation= 0.3f;
+	static inline const float kAttenuation = 0.3f;
 
-	static inline const float kLimitRunSpeed = 2.0f;
+	static inline const float kLimitRunSpeed = 0.8f;
 
-	static inline const float kGravityAcceleration = 0.4f;
+	static inline const float kGravityAcceleration = 0.1f;
 
-		static inline const float kLimitFallSpeed = 2.0f;
+	static inline const float kLimitFallSpeed = 1.0f;
 
-		static inline const float kJumpAcceleration = 3.0f;
+	static inline const float kJumpAcceleration = 1.0f;
+
+	static inline const float kWidth = 0.8f;
+
+	static inline const float kHeight = 0.8f;
 
 	KamataEngine::Vector3 velocity_ = {};
 
@@ -46,11 +69,26 @@ public:
 
 	const KamataEngine::Vector3& GetVelocity() const { return velocity_; }
 
+	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
+
+	void CheckMapCollision(CollisionMapInfo& info);
+	void CheckMapCollisionUp(CollisionMapInfo& info);
+
+	void CheckMapMove(const CollisionMapInfo& info);
+
+	void CheckMapCeiling(const CollisionMapInfo& info);
+
 private:
 	// ワールド変換データ
 	KamataEngine::WorldTransform worldTransform_;
 
 	// モデル
 	KamataEngine::Model* model_ = nullptr;
-};
 
+	MapChipField* mapChipField_ = nullptr;
+
+	KamataEngine::Vector3 CornerPosition(const KamataEngine::Vector3& center, Corner corner);
+
+//隙間
+	static inline const float kBlank = 0.1f;
+};

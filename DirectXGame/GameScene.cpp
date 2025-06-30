@@ -13,11 +13,12 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("SkyDome", true);
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 
-	// 自キャラ等生成
-	skydome_ = new Skydome();
-
+	// マップチップフィールドの生成
 	mapChipField_ = new MapChipField;
+	// マップチップフィールドの初期化
+	mapChipField_->LoadMapchipCsv("Resources/blocks.csv");
 
+	// 自キャラ生成
 	player_ = new Player();
 
 	// ワールドトランスフォームの初期化
@@ -27,6 +28,10 @@ void GameScene::Initialize() {
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,18);
 	// 自キャラの初期化
 	player_->Initialize(modelPlayer_, &camera_, playerPosition);
+
+	skydome_ = new Skydome();
+
+	player_->SetMapChipField(mapChipField_);
 
 	// カメラの初期化
 	camera_.Initialize();
@@ -41,9 +46,7 @@ void GameScene::Initialize() {
 
 	//他の初期化
 	skydome_->Initialize(modelSkydome_, &camera_);
-
-	mapChipField_->LoadMapchipCsv("Resources/blocks.csv");
-
+	
 	GenerateBlocks();
 
 	cameraController_->Reset();
