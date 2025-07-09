@@ -45,11 +45,11 @@ public:
 
 	static inline const float kTimeTurn = 0.3f;
 
-	static inline const float kAcceleration = 0.05f;
+	static inline const float kAcceleration = 0.1f;
 
-	static inline const float kAttenuation = 0.3f;
+	static inline const float kAttenuation = 0.2f;
 
-	static inline const float kLimitRunSpeed = 0.8f;
+	static inline const float kLimitRunSpeed = 0.5f;
 
 	static inline const float kGravityAcceleration = 0.1f;
 
@@ -72,11 +72,20 @@ public:
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 
 	void CheckMapCollision(CollisionMapInfo& info);
+
 	void CheckMapCollisionUp(CollisionMapInfo& info);
+	void CheckMapCollisionDown(CollisionMapInfo& info);
+	void CheckMapCollisionRight(CollisionMapInfo& info);
+	void CheckMapCollisionLeft(CollisionMapInfo& info);
 
 	void CheckMapMove(const CollisionMapInfo& info);
 
+	void CheckMapWall(const CollisionMapInfo& info);
+
 	void CheckMapCeiling(const CollisionMapInfo& info);
+
+	//接地状態に切れ変え処理
+	void CheckMapLanding(const CollisionMapInfo& info);
 
 private:
 	// ワールド変換データ
@@ -91,4 +100,10 @@ private:
 
 //隙間
 	static inline const float kBlank = 0.1f;
+	//着地時の速度減衰
+	static inline const float kAttenuationLanding = 0.5f;
+	//微小な数値
+	static inline const float kGroundSearchHeight = 0.1f;
+	//着地時の距離減衰率
+	static inline const float kAttenuationWall = 0.5f;
 };
