@@ -7,6 +7,7 @@
 #include "MapChipField.h"
 #include "CameraController.h"
 
+//16q
 class GameScene {
 public:
 	// 初期化
@@ -43,7 +44,7 @@ public:
 	Skydome* skydome_ = nullptr;
 
 	//敵
-	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
 	
 	//カメラコントローラ
 	CameraController* cameraController_ = nullptr;

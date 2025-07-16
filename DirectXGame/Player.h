@@ -1,5 +1,6 @@
 #pragma once
 #include "KamataEngine.h"
+#include "MyMath.h"
 
 class MapChipField;
 
@@ -86,6 +87,11 @@ public:
 
 	//接地状態に切れ変え処理
 	void CheckMapLanding(const CollisionMapInfo& info);
+	// ワールド座標取得
+	KamataEngine::Vector3 GetWorldPosition();
+
+	//AABBを取得
+	AABB GetAABB();
 
 private:
 	// ワールド変換データ
@@ -106,4 +112,5 @@ private:
 	static inline const float kGroundSearchHeight = 0.1f;
 	//着地時の距離減衰率
 	static inline const float kAttenuationWall = 0.5f;
+
 };
