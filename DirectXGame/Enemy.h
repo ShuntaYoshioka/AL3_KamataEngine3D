@@ -1,5 +1,8 @@
 #pragma once
 #include "KamataEngine.h"
+#include "MyMath.h"
+
+class Player;
 
 class Enemy {
 public:
@@ -8,15 +11,22 @@ public:
 	void Update();
 	void Draw();
 
-	//歩行スピード
+	// 歩行スピード
 	static inline const float kWalkSpeed = 0.05f;
 
 	float walkTimer_ = 0.0f;
 
 	KamataEngine::Vector3 velocity_ = {};
-	private:
-	KamataEngine::WorldTransform worldTransform_; //ワールドトランスふぉーむ
-	KamataEngine::Model* model_ = nullptr;        //モデル
-	KamataEngine::Camera* camera_ = nullptr;      //カメラ
-;
+	// AABBを取得
+	AABB GetAABB();
+	KamataEngine::Vector3 GetWorldPosition();
+
+	//衝突応答
+	void OnCollision(const Player* player);
+
+private:
+	KamataEngine::WorldTransform worldTransform_; // ワールドトランスふぉーむ
+	KamataEngine::Model* model_ = nullptr;        // モデル
+	KamataEngine::Camera* camera_ = nullptr;      // カメラ
+	;
 };

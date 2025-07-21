@@ -99,6 +99,29 @@ void GameScene::GenerateBlocks() {
 	}
 }
 
+void GameScene::CheckAllCollisions() {
+#pragma region 自キャラと敵キャラの当たり判定
+
+	AABB aabb1, aabb2;
+
+	aabb1 = player_->GetAABB();
+
+	for (Enemy* enemy : enemies_) {
+	
+		aabb2 = enemy->GetAABB();
+
+		if (IsCollision(aabb1, aabb2)) {
+			player_->OnCollision(enemy);
+
+			enemy->OnCollision(player_);
+
+		}
+
+	}
+#pragma endregion
+
+}
+
 void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
@@ -134,6 +157,9 @@ void GameScene::Update() {
 		isDebugCameraActive_ = !isDebugCameraActive_;
 	}
 #endif
+
+	CheckAllCollisions();
+
 
 	// カメラの処理
 	if (isDebugCameraActive_) {

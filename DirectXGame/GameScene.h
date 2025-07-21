@@ -62,6 +62,8 @@ public:
 
 	void GenerateBlocks();
 
+	void CheckAllCollisions();
+
 
 private:
 	// テクスチャハンドル

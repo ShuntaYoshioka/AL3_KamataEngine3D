@@ -12,3 +12,6 @@ struct AABB {
 	KamataEngine::Vector3 min;
 	KamataEngine::Vector3 max;
 };
+
+//衝突判定
+bool IsCollision(const AABB& aabb1, const AABB& aabb2);
