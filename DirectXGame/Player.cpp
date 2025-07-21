@@ -2,7 +2,6 @@
 
 #include "Player.h"
 #include "KamataEngine.h"
-#include "MyMath.h"
 #include <algorithm>
 #include <numbers>
 #include "MapChipField.h"
@@ -442,6 +441,41 @@ void Player::CheckMapLanding(const CollisionMapInfo& info) {
 	}
 
 }
+
+KamataEngine::Vector3 Player::GetWorldPosition() {
+	KamataEngine::Vector3 worldPos;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
+}
+
+AABB Player::GetAABB() { 
+	KamataEngine::Vector3 worldPos = GetWorldPosition();
+
+	AABB aabb;
+
+	aabb.min = {
+	    worldPos.x - 1.0f / 2.0f,
+	    worldPos.y - 1.0f / 2.0f,
+	    worldPos.z- 1.0f / 2.0f,
+	};
+
+		aabb.max = {
+	    worldPos.x + 1.0f / 2.0f,
+	    worldPos.y + 1.0f / 2.0f,
+	    worldPos.z + 1.0f / 2.0f,
+	};
+	return aabb; 
+}
+
+void Player::OnCollision(const Enemy* enemy) {
+	(void)enemy;
+	// 当たった際の挙動
+	velocity_ += KamataEngine::Vector3(0.0f,0.5f,0.0f);
+}
+
 
 KamataEngine::Vector3 Player::CornerPosition(const KamataEngine::Vector3& center, Corner corner) { 
 	

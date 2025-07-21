@@ -22,14 +22,24 @@ void GameScene::Initialize() {
 	// 自キャラ生成
 	player_ = new Player();
 
+	//自キャラ座標をマップチップ番号で指定
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(18, 18);
+	
+
 	//敵生成
-	enemy_ = new Enemy();
+	for (int32_t i = 0; i < 2; ++i) {
+		Enemy* newEnemy = new Enemy();
+		Vector3 enemyPosition = {playerPosition.x + 8.0f * (i + 1), playerPosition.y, playerPosition.z};
+
+		newEnemy->Initialize(modelEnemy_, &camera_,enemyPosition);
+
+		enemies_.push_back(newEnemy);
+	}
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 
-	// 座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3,18);
+	//敵座標をマップチップ番号で指定
 	
 	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(16, 18);
 	// 自キャラの初期化
@@ -53,8 +63,7 @@ void GameScene::Initialize() {
 	//他の初期化
 	skydome_->Initialize(modelSkydome_, &camera_);
 	
-	enemy_->Initialize(modelEnemy_, &camera_, enemyPosition);
-	GenerateBlocks();
+GenerateBlocks();
 
 	cameraController_->Reset();
 
@@ -90,6 +99,29 @@ void GameScene::GenerateBlocks() {
 	}
 }
 
+void GameScene::CheckAllCollisions() {
+#pragma region 自キャラと敵キャラの当たり判定
+
+	AABB aabb1, aabb2;
+
+	aabb1 = player_->GetAABB();
+
+	for (Enemy* enemy : enemies_) {
+	
+		aabb2 = enemy->GetAABB();
+
+		if (IsCollision(aabb1, aabb2)) {
+			player_->OnCollision(enemy);
+
+			enemy->OnCollision(player_);
+
+		}
+
+	}
+#pragma endregion
+
+}
+
 void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
@@ -97,7 +129,9 @@ void GameScene::Update() {
 	// Skyblock
 	skydome_->Update();
 
-	enemy_->Update();
+	for (Enemy* enemy : enemies_) {
+		enemy->Update();
+	}
 
 	//カメラコントロール
 	cameraController_->Update(); 
@@ -123,6 +157,9 @@ void GameScene::Update() {
 		isDebugCameraActive_ = !isDebugCameraActive_;
 	}
 #endif
+
+	CheckAllCollisions();
+
 
 	// カメラの処理
 	if (isDebugCameraActive_) {
@@ -160,7 +197,10 @@ void GameScene::Draw() {
 
 	player_->Draw();
 
-	enemy_->Draw();
+	for (Enemy* enemy : enemies_) {
+		enemy->Draw();
+	}
+
 
 	Model::PostDraw();
 }
@@ -170,6 +210,9 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete modelPlayer_;
 	delete modelEnemy_;
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+	}
 	delete modelSkydome_;
 	delete mapChipField_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
