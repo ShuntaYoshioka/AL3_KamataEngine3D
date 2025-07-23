@@ -13,6 +13,7 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("SkyDome", true);
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	modelDeathParticle_ = Model::CreateFromOBJ("deathParticle", true);
 
 	// マップチップフィールドの生成
 	mapChipField_ = new MapChipField;
@@ -59,6 +60,10 @@ void GameScene::Initialize() {
 
 	CameraController::Rect cameraAera = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
 	cameraController_->SetMovableArea(cameraAera);
+
+	//仮生成パーティクル
+	deathParticles_ = new DeathParticles;
+	deathParticles_->Initialize(modelDeathParticle_, &camera_, playerPosition);
 
 	//他の初期化
 	skydome_->Initialize(modelSkydome_, &camera_);
@@ -133,6 +138,8 @@ void GameScene::Update() {
 		enemy->Update();
 	}
 
+
+
 	//カメラコントロール
 	cameraController_->Update(); 
 	
@@ -150,6 +157,10 @@ void GameScene::Update() {
 			// 定数バッファに転送する
 			worldTransformBlock->TransferMatrix();
 		}
+	}
+
+	if (deathParticles_) {
+		deathParticles_->Update();
 	}
 
 #ifdef _DEBUG
@@ -201,6 +212,9 @@ void GameScene::Draw() {
 		enemy->Draw();
 	}
 
+	if (deathParticles_) {
+		deathParticles_->Draw();
+	}
 
 	Model::PostDraw();
 }
@@ -210,6 +224,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete modelPlayer_;
 	delete modelEnemy_;
+	delete deathParticles_;
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
 	}

@@ -6,6 +6,7 @@
 #include <vector>
 #include "MapChipField.h"
 #include "CameraController.h"
+#include "DeathParticles.h"
 
 //16q
 class GameScene {
@@ -30,6 +31,8 @@ public:
 	KamataEngine::Model* modelPlayer_ = nullptr;
 
 	KamataEngine::Model* modelEnemy_ = nullptr;
+
+	KamataEngine::Model* modelDeathParticle_ = nullptr;
 	
 	// ワールドトランスフォーム
 	KamataEngine::WorldTransform worldTransform_;
@@ -45,6 +48,9 @@ public:
 
 	//敵
 	std::list<Enemy*> enemies_;
+
+	//パーティクル
+	DeathParticles* deathParticles_ = nullptr;
 	
 	//カメラコントローラ
 	CameraController* cameraController_ = nullptr;
