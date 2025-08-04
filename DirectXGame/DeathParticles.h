@@ -15,6 +15,9 @@ public:
 	/// 描画
 	void Draw();
 
+	bool IsFinished() const { return isFinished_; }
+
+
 private:
 	KamataEngine::WorldTransform worldTransform_; // ワールドトランスふぉーむ
 	KamataEngine::Model* model_ = nullptr;        // モデル
