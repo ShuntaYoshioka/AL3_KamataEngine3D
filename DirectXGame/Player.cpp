@@ -473,7 +473,7 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 	// 当たった際の挙動
-	velocity_ += KamataEngine::Vector3(0.0f,0.5f,0.0f);
+	isDead_ = true;
 }
 
 

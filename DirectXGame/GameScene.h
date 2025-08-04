@@ -7,10 +7,24 @@
 #include "MapChipField.h"
 #include "CameraController.h"
 #include "DeathParticles.h"
+#include "TitleScene.h"
 
-//16q
 class GameScene {
+
+	private:
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0;
+
+	bool finished_ = false;
+
+
 public:
+
+	enum class Phase {
+		kPlay,
+		kDeath,
+	};
+
 	// 初期化
 	void Initialize();
 
@@ -70,8 +84,11 @@ public:
 
 	void CheckAllCollisions();
 
+	void ChangePhase();
 
-private:
-	// テクスチャハンドル
-	uint32_t textureHandle_ = 0;
+	//ゲームプレイから開始
+	Phase phase_;
+
+	bool isFinished() const { return finished_; }
+
 };
