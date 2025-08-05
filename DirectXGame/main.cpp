@@ -42,7 +42,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	gameScene->Initialize();
 
 	titleScene = new TitleScene;
-	
+	titleScene->Initialize();
+
 	// メインループ
 	while (true) {
 
@@ -53,7 +54,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//ゲームシーンの更新
 		ChangeScene();
-		gameScene->Update();
 
 		// 描画開始
 		UpdateScene();
@@ -61,7 +61,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//ゲームシーンの描画
 		DrawScene();
-		gameScene->Draw();
 
 		// 描画終了
 		dxCommon->PostDraw();
@@ -98,8 +97,7 @@ void ChangeScene() {
 		case Scene::kGame:
 		    // ゲームシーンの更新処理
 		    if (gameScene) {
-			    gameScene->Update();
-
+			 
 			    if (gameScene->isFinished()) {
 				    scene = Scene::kTitle;
 				    delete gameScene;
