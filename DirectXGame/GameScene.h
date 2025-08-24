@@ -1,28 +1,32 @@
 #pragma once
-#include "KamataEngine.h"
-#include "Player.h"
-#include "Skydome.h"
-#include "Enemy.h"
-#include <vector>
-#include "MapChipField.h"
 #include "CameraController.h"
 #include "DeathParticles.h"
+#include "Enemy.h"
+#include "Fade.h"
+#include "Goal.h"
+#include "KamataEngine.h"
+#include "MapChipField.h"
+#include "Player.h"
+#include "Skydome.h"
 #include "TitleScene.h"
+#include <vector>
 
 class GameScene {
 
-	private:
+private:
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 
 	bool finished_ = false;
 
+	Goal goal_;
 
 public:
-
 	enum class Phase {
+		kFadeIn,
 		kPlay,
 		kDeath,
+		kFadeOut,
 	};
 
 	// 初期化
@@ -33,7 +37,7 @@ public:
 
 	// 描画
 	void Draw();
-  
+
 	// デストラクタ
 	~GameScene();
 
@@ -47,35 +51,37 @@ public:
 	KamataEngine::Model* modelEnemy_ = nullptr;
 
 	KamataEngine::Model* modelDeathParticle_ = nullptr;
-	
+
+	KamataEngine::Model* modelGoal_ = nullptr;
+
 	// ワールドトランスフォーム
 	KamataEngine::WorldTransform worldTransform_;
 
 	// カメラ
 	KamataEngine::Camera camera_;
 
-	//自キャラ
+	// 自キャラ
 	Player* player_ = nullptr;
 
-	//sky
+	// sky
 	Skydome* skydome_ = nullptr;
 
-	//敵
+	// 敵
 	std::list<Enemy*> enemies_;
 
-	//パーティクル
+	// パーティクル
 	DeathParticles* deathParticles_ = nullptr;
-	
-	//カメラコントローラ
+
+	// カメラコントローラ
 	CameraController* cameraController_ = nullptr;
 
-	//マップチップフィールド
+	// マップチップフィールド
 	MapChipField* mapChipField_;
 
-	//デバッグカメラ有効
+	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
 
-	//デバッグカメラ
+	// デバッグカメラ
 	KamataEngine::DebugCamera* debugCamera_ = nullptr;
 
 	std::vector<std::vector<KamataEngine::WorldTransform*>> worldTransformBlocks_;
@@ -86,9 +92,12 @@ public:
 
 	void ChangePhase();
 
-	//ゲームプレイから開始
+	// ゲームプレイから開始
 	Phase phase_;
 
 	bool isFinished() const { return finished_; }
 
+	bool isclear_ = false;
+
+	Fade* fade_ = nullptr;
 };
