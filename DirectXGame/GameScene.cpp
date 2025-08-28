@@ -7,10 +7,10 @@ using namespace KamataEngine;
 void GameScene::Initialize() {
 
 	phase_ = Phase::kFadeIn;
-	// ファイル名を指定してテクスチャを読み込む
+	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("./Resources./uvChecker.png");
 
-	// 3Dモデルの生成
+	//3Dモデルの生成
 	modelBlock_ = Model::CreateFromOBJ("block");
 	modelSkydome_ = Model::CreateFromOBJ("SkyDome", true);
 	modelPlayer_ = Model::CreateFromOBJ("player", true);
@@ -26,13 +26,13 @@ void GameScene::Initialize() {
 	player_ = new Player();
 
 	//自キャラ座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(18, 18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(6, 18);
 	
 
 	//敵生成
-	for (int32_t i = 0; i < 2; ++i) {
+	for (int32_t i = 0; i < 6; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = {playerPosition.x + 8.0f * (i + 1), playerPosition.y, playerPosition.z};
+		Vector3 enemyPosition = {playerPosition.x + 8.0f * (i + 2), playerPosition.y + 1.0f * (i + 2), playerPosition.z};
 
 		newEnemy->Initialize(modelEnemy_, &camera_,enemyPosition);
 
@@ -68,7 +68,7 @@ void GameScene::Initialize() {
 	deathParticles_->Initialize(modelDeathParticle_, &camera_, playerPosition);
 
 	// ゴールの初期化
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(60, 18); // マップ右端に置く例
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(95, 14); // マップ右端に置く例
 	Vector3 goalSize = {1.0f, 1.0f, 1.0f};
 	goal_.Initialize(goalPosition, goalSize, modelGoal_);
 	//他の初期化
