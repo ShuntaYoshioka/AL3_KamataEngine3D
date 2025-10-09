@@ -46,6 +46,8 @@ public:
 
 	bool onGround_ = true;
 
+	bool isGrab_ = false;
+
 	static inline const float kTimeTurn = 0.3f;
 
 	static inline const float kAcceleration = 0.08f;
@@ -116,12 +118,16 @@ private:
 //隙間
 	static inline const float kBlank = 0.1f;
 	//着地時の速度減衰
-	static inline const float kAttenuationLanding = 0.5f;
+	static inline const float kAttenuationLanding = 0.8f;
 	//微小な数値
 	static inline const float kGroundSearchHeight = 0.1f;
 	//着地時の距離減衰率
 	static inline const float kAttenuationWall = 0.5f;
 
+	bool prevSpace_ = false;
+
 	// ですフラグ
 	bool isDead_ = false;
+	
+
 };

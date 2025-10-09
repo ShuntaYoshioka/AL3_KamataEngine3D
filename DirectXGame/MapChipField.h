@@ -50,8 +50,8 @@ public:
 	static inline const float kBlockHeight = 1.0f;
 
 	// ブロックの個数
-	static inline const uint32_t kNumBlockVirtical = 20;
-	static inline const uint32_t kNumBlockHorizontal = 100;
+	static inline const uint32_t kNumBlockVirtical = 38;
+	static inline const uint32_t kNumBlockHorizontal = 50;
 
 	MapChipData mapChipData_;
 

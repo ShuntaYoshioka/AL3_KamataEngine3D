@@ -26,7 +26,7 @@ void GameScene::Initialize() {
 	player_ = new Player();
 
 	//自キャラ座標をマップチップ番号で指定
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(6, 18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(4, 18);
 	
 
 	//敵生成
@@ -68,7 +68,7 @@ void GameScene::Initialize() {
 	deathParticles_->Initialize(modelDeathParticle_, &camera_, playerPosition);
 
 	// ゴールの初期化
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(95, 14); // マップ右端に置く例
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(10, 32); 
 	Vector3 goalSize = {1.0f, 1.0f, 1.0f};
 	goal_.Initialize(goalPosition, goalSize, modelGoal_);
 	//他の初期化
@@ -94,10 +94,10 @@ void GameScene::GenerateBlocks() {
 
 	// 要素数を変更する
 	// 列数を設定
-	worldTransformBlocks_.resize(20);
-	for (uint32_t i = 0; i < 20; ++i) {
+	worldTransformBlocks_.resize(38);
+	for (uint32_t i = 0; i < 38; ++i) {
 		// 1列の要素数を設定
-		worldTransformBlocks_[i].resize(100);
+		worldTransformBlocks_[i].resize(50);
 	}
 
 	// キューブの生成
@@ -115,11 +115,11 @@ void GameScene::GenerateBlocks() {
 
 void GameScene::CheckAllCollisions() {
 #pragma region 自キャラと敵キャラの当たり判定
-
 	AABB aabb1, aabb2;
 
 	aabb1 = player_->GetAABB();
 
+	
 	for (Enemy* enemy : enemies_) {
 	
 		aabb2 = enemy->GetAABB();
@@ -133,10 +133,13 @@ void GameScene::CheckAllCollisions() {
 
 	}
 
+
 	if (IsCollision(aabb1, goal_.GetAABB())) {
-		finished_ = true;
-		isclear_ = true;
+		isgrab_ = true;
+	
 	}
+	
+
 #pragma endregion
 
 }

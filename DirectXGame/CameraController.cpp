@@ -38,6 +38,14 @@ void CameraController::Update() {
 }
 
 void CameraController::Reset() {
+	if (!target_)
+		return;
+
 	const WorldTransform& targetWorldTransform = target_->GetWorldTransform();
+
+	// プレイヤー位置 + オフセットで初期位置
 	camera_.translation_ = targetWorldTransform.translation_ + targetoffest_;
+	targetPosition_ = camera_.translation_; 
+
+	camera_.UpdateMatrix();
 }

@@ -21,6 +21,8 @@ private:
 
 	Goal goal_;
 
+		bool isgrab_ = false;
+
 public:
 	enum class Phase {
 		kFadeIn,
@@ -100,4 +102,5 @@ public:
 	bool isclear_ = false;
 
 	Fade* fade_ = nullptr;
+
 };

@@ -15,22 +15,8 @@ void Enemy::Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera,
 }
 
 void Enemy::Update() {
-	// 横移動
-	worldTransform_.translation_.x -= kWalkSpeed;
-
 	// ジャンプ挙動用タイマー
 	walkTimer_ += 1.0f / 60.0f;
-
-	// 接地判定
-	bool onGround = worldTransform_.translation_.y <= kGroundY;
-
-	// 接地していたらジャンプ開始
-	if (onGround && velocity_.y <= 0.0f) {
-		velocity_.y = kJumpSpeed;
-	}
-
-	// 重力適用
-	velocity_.y -= kGravity;
 
 	// 位置更新
 	worldTransform_.translation_.x += velocity_.x;

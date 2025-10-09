@@ -80,75 +80,62 @@ void Player::Update() {
 }
 
 
+
+
 void Player::InputMove() {
-	// 移動入力
-	if (onGround_) {
-		if (KamataEngine::Input::GetInstance()->PushKey(DIK_RIGHT) || KamataEngine::Input::GetInstance()->PushKey(DIK_LEFT)) {
-			// 左右加速
-			KamataEngine::Vector3 acceleration = {};
-			// 右入力
-			if (KamataEngine::Input::GetInstance()->PushKey(DIK_RIGHT)) {
-				// 左入力中の右入力
-				if (velocity_.x < 0.0f) {
-					// 速度と逆方向に入力中は急ブレーキ
-					velocity_.x *= (1.0f - kAttenuation);
-				}
-				acceleration.x += kAcceleration;
-				if (lrDirection_ != LRDirection::kRight) {
-					lrDirection_ = LRDirection::kRight;
+	KamataEngine::Input* input = KamataEngine::Input::GetInstance();
 
-					turnFirstRotationY_ = worldTransform_.rotation_.y;
-					turnTimer_ = kTimeTurn;
-				}
+	bool spaceNow = input->PushKey(DIK_SPACE);
 
-			} else if (KamataEngine::Input::GetInstance()->PushKey(DIK_LEFT)) {
-				// 左入力
-				// 右入力中の左入力
-				if (velocity_.x > 0.0f) {
-					// 速度と逆方向に入力中は急ブレーキ
-					velocity_.x *= (1.0f - kAttenuation);
-				}
+	static const KamataEngine::Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(10, 32);
 
-				acceleration.x -= kAcceleration;
-				if (lrDirection_ != LRDirection::kLeft) {
-					lrDirection_ = LRDirection::kLeft;
 
-					turnFirstRotationY_ = worldTransform_.rotation_.y;
-					turnTimer_ = kTimeTurn;
-				}
+	// SPACE長押し中で接地している場合
+
+	// SPACE長押し中
+	if (spaceNow) {
+
+		// 接地中の回転処理
+		if (onGround_) {
+			constexpr float kTurnSpeed = 0.09f;
+			worldTransform_.rotation_.z += kTurnSpeed;
+			if (worldTransform_.rotation_.z > 6.2831853f) {
+				worldTransform_.rotation_.z -= 6.2831853f;
 			}
-
-			// 加速/減速
-			velocity_ += acceleration;
-			// 最大速度再現
-			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
-
-		} else {
-			velocity_.x *= (1.0f - kAttenuation);
-		}
-		if (KamataEngine::Input::GetInstance()->PushKey(DIK_UP)) {
-			velocity_ += KamataEngine::Vector3(0, kJumpAcceleration, 0);
 		}
 
-		// 空中
-	} else {
-		// 落下速度
-		velocity_ += KamataEngine::Vector3(0, -kGravityAcceleration, 0);
-		// 速度制限
+		// isGrab_ が true のときは位置を固定
+		if (isGrab_) {
+			worldTransform_.translation_ = goalPosition;
+			velocity_ = {0.0f, 0.0f, 0.0f}; // 念のため停止
+		}
+	}
+
+	// SPACE離した瞬間にジャンプ
+	if ((onGround_ || isGrab_) && prevSpace_ && !spaceNow) {
+		velocity_.x = (kJumpAcceleration * 0.5f) * std::cos(worldTransform_.rotation_.z);
+		velocity_.y = kJumpAcceleration * std::sin(worldTransform_.rotation_.z);
+
+		// 接地判定は外す（ジャンプ状態へ移行）
+		onGround_ = false;
+		isGrab_ = false; // 敵から離れる
+	}
+
+	// 空中は重力
+	if (!onGround_) {
+		velocity_.y -= kGravityAcceleration;
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
+
+	prevSpace_ = spaceNow;
 }
 
 void Player::AnimateTurn() {
-	if (turnTimer_ > 0.0f) {
-		turnTimer_ -= 1.0f / 60.0f;
-
-		float destinationRotationYTable[] = {std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> * 3.0f / 2.0f};
-		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
-
-		worldTransform_.rotation_.y = EaseInOut(destinationRotationY, turnFirstRotationY_, turnTimer_ / kTimeTurn);
-	}
+	// 回転はInputMoveでやった
 }
+
+
+
 void Player::CheckMapCollision(CollisionMapInfo& info) {
 	CheckMapCollisionUp(info);
 	CheckMapCollisionDown(info);
