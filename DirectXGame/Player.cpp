@@ -87,16 +87,16 @@ void Player::InputMove() {
 
 	bool spaceNow = input->PushKey(DIK_SPACE);
 
-	static const KamataEngine::Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(10, 32);
-
-
-	// SPACE長押し中で接地している場合
+	// --- メンバ変数を更新 ---
+	angle_ = worldTransform_.rotation_.z;
+	cosValue_ = std::cos(angle_);
+	sinValue_ = std::sin(angle_);
 
 	// SPACE長押し中
 	if (spaceNow) {
-
 		// 接地中の回転処理
-		if (onGround_) {
+		if (onGround_ || isGrab_) {
+
 			constexpr float kTurnSpeed = 0.09f;
 			worldTransform_.rotation_.z += kTurnSpeed;
 			if (worldTransform_.rotation_.z > 6.2831853f) {
@@ -104,27 +104,36 @@ void Player::InputMove() {
 			}
 		}
 
-		// isGrab_ が true のときは位置を固定
+		// 掴んでいるときだけ位置を固定
 		if (isGrab_) {
-			worldTransform_.translation_ = goalPosition;
-			velocity_ = {0.0f, 0.0f, 0.0f}; // 念のため停止
+			worldTransform_.translation_ = grabPosition_;
+			velocity_ = {0.0f, 0.0f, 0.0f};
 		}
 	}
 
-	// SPACE離した瞬間にジャンプ
+	// SPACEを離した瞬間にジャンプ
 	if ((onGround_ || isGrab_) && prevSpace_ && !spaceNow) {
-		velocity_.x = (kJumpAcceleration * 0.5f) * std::cos(worldTransform_.rotation_.z);
-		velocity_.y = kJumpAcceleration * std::sin(worldTransform_.rotation_.z);
+		isGrab_ = false;
 
-		// 接地判定は外す（ジャンプ状態へ移行）
+		// 真下方向に近いときは横移動を抑制
+		if (std::abs(cosValue_) < 0.1f) {
+			cosValue_ = 0.0f;
+		}
+
+		velocity_.x = (kJumpAcceleration * 0.5f) * cosValue_;
+		velocity_.y = kJumpAcceleration * sinValue_;
 		onGround_ = false;
-		isGrab_ = false; // 敵から離れる
+		isGrab_ = false;
 	}
 
 	// 空中は重力
 	if (!onGround_) {
 		velocity_.y -= kGravityAcceleration;
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
+	}
+
+	 if (!prevOnGround_ && onGround_) {
+		velocity_ = {0.0f, 0.0f, 0.0f}; // 完全停止
 	}
 
 	prevSpace_ = spaceNow;

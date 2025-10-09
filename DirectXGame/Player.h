@@ -44,6 +44,12 @@ public:
 
 	float turnTimer_ = 0.0f;
 
+	bool prevOnGround_ = false; 
+
+	float angle_ = 0.0f;
+	float cosValue_ = 0.0f;
+	float sinValue_ = 0.0f;
+
 	bool onGround_ = true;
 
 	bool isGrab_ = false;
@@ -100,9 +106,15 @@ public:
 	//衝突応答
 	void OnCollision(const Enemy* enemy);
 
+	  void SetGrab(bool grab) { isGrab_ = grab; }
+
+	void SetGrabPosition(const KamataEngine::Vector3& pos) { grabPosition_ = pos; }
+
+
 
 	// げった
 	bool isDead() const { return isDead_; }
+
 
 private:
 	// ワールド変換データ
@@ -129,5 +141,5 @@ private:
 	// ですフラグ
 	bool isDead_ = false;
 	
-
+	KamataEngine::Vector3 grabPosition_;
 };

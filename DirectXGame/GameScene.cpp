@@ -68,7 +68,7 @@ void GameScene::Initialize() {
 	deathParticles_->Initialize(modelDeathParticle_, &camera_, playerPosition);
 
 	// ゴールの初期化
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(10, 32); 
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(8, 32); 
 	Vector3 goalSize = {1.0f, 1.0f, 1.0f};
 	goal_.Initialize(goalPosition, goalSize, modelGoal_);
 	//他の初期化
@@ -133,11 +133,14 @@ void GameScene::CheckAllCollisions() {
 
 	}
 
+if (IsCollision(aabb1, goal_.GetAABB())) {
+		player_->SetGrab(true);
+		player_->SetGrabPosition(mapChipField_->GetMapChipPositionByIndex(8, 32));
+} else {
+	player_->SetGrab(false);
 
-	if (IsCollision(aabb1, goal_.GetAABB())) {
-		isgrab_ = true;
-	
-	}
+}
+
 	
 
 #pragma endregion
